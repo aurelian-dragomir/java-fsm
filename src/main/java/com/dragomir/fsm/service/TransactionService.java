@@ -1,6 +1,6 @@
-package com.dragomir.fsm.example.service;
+package com.dragomir.fsm.service;
 
-import com.dragomir.fsm.example.Transaction;
+import com.dragomir.fsm.entity.Transaction;
 import com.dragomir.fsm.state.TransactionState;
 import org.springframework.stereotype.Service;
 

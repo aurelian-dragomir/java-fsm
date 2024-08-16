@@ -1,15 +1,14 @@
 package com.dragomir.fsm;
 
-import com.dragomir.fsm.v.with.pipeline.Pipeline;
-import com.dragomir.fsm.v.with.pipeline.Step;
-import com.dragomir.fsm.example.Transaction;
+import com.dragomir.fsm.entity.Transaction;
+import com.dragomir.fsm.pipeline.Pipeline;
 import com.dragomir.fsm.state.TransactionState;
+import com.dragomir.fsm.step.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 

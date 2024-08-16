@@ -1,4 +1,4 @@
-package com.dragomir.fsm.example.scheduler;
+package com.dragomir.fsm.scheduler;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

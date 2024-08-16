@@ -1,18 +1,28 @@
-package com.dragomir.fsm.example;
+package com.dragomir.fsm;
 
+import com.dragomir.fsm.pipeline.Pipeline;
+import com.dragomir.fsm.service.TransactionService;
+import com.dragomir.fsm.step.Step;
+import com.dragomir.fsm.entity.Transaction;
 import com.dragomir.fsm.state.TransactionState;
-import com.dragomir.fsm.v.with.pipeline.Pipeline;
-import com.dragomir.fsm.v.with.pipeline.Step;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest
 public class PipelineTest {
+
+    @SpyBean
+    private TransactionService transactionService;
 
     @Autowired
     private List<Step> steps;
@@ -32,5 +42,18 @@ public class PipelineTest {
         var p = Pipeline.<Transaction, Transaction>of(steps, i);
         var tran = p.execute(t);
         assertTrue(tran.getState() == TransactionState.APPLIED);
+    }
+
+    @Test
+    public void testWithBadStateTransition() {
+        var t = new Transaction(1L, TransactionState.NEW);
+
+        doReturn(new Transaction(1L,
+                TransactionState.WAITING_APPROVAL))
+                .when(transactionService).changeState(any(), eq(TransactionState.APPROVED));
+
+        assertThrows(RuntimeException.class, () -> {
+            Pipeline.<Transaction, Transaction>of(steps).execute(t);
+        });
     }
 }

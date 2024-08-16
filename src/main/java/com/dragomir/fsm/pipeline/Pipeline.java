@@ -1,5 +1,6 @@
-package com.dragomir.fsm.v.with.pipeline;
+package com.dragomir.fsm.pipeline;
 
+import com.dragomir.fsm.step.Step;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.dragomir.fsm.example;
+package com.dragomir.fsm.entity;
 
 import com.dragomir.fsm.state.TransactionState;
 import lombok.AllArgsConstructor;
