@@ -1,4 +1,4 @@
-package com.dragomir.fsm.step;
+package com.dragomir.fsm.pipeline.step;
 
 public interface Step<I, O> {
     O compute(I input);

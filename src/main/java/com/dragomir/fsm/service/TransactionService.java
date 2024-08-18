@@ -24,4 +24,8 @@ public class TransactionService {
         //call TransactionRepository for actual save in the database
         return tx;
     }
+
+    public TransactionState getNextState(TransactionState currentState) {
+        return STATE_MAP.get(currentState);
+    }
 }

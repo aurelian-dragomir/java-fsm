@@ -1,4 +1,4 @@
-package com.dragomir.fsm.step;
+package com.dragomir.fsm.pipeline.step;
 
 import com.dragomir.fsm.entity.Transaction;
 import com.dragomir.fsm.state.TransactionState;
@@ -9,19 +9,18 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(1)
+@Order(3)
 @Slf4j
 @RequiredArgsConstructor
-public class WaitingApprovalStep implements Step<Transaction, Transaction> {
+public class AppliedStep implements Step<Transaction, Transaction> {
     private final TransactionService transactionService;
 
     @Override
     public Transaction compute(Transaction input) {
 
         //update in db
-        Transaction t = transactionService.changeState(input, TransactionState.WAITING_APPROVAL);
-        log.info("Executed step WaitingApprovalStep");
+        Transaction t = transactionService.changeState(input, TransactionState.APPLIED);
+        log.info("Executed step AppliedStep");
         return t;
     }
-
 }

@@ -1,8 +1,7 @@
-package com.dragomir.fsm;
+package com.dragomir.fsm.pipeline;
 
-import com.dragomir.fsm.pipeline.Pipeline;
 import com.dragomir.fsm.service.TransactionService;
-import com.dragomir.fsm.step.Step;
+import com.dragomir.fsm.pipeline.step.Step;
 import com.dragomir.fsm.entity.Transaction;
 import com.dragomir.fsm.state.TransactionState;
 import org.junit.jupiter.api.Test;
