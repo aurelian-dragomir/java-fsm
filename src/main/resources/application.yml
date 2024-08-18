@@ -14,7 +14,7 @@ logging:
   level:
 #    org.apache.kafka: info
 #    org.springframework.kafka: info
-    org.apache.kafka.clients.consumer.internals: error
+#    org.apache.kafka.clients.consumer.internals: info
     #    org.springframework.orm.jpa.JpaTransactionManager: trace
     #    org.springframework.kafka.transaction: trace
     #    org.springframework.kafka.core.DefaultKafkaProducerFactory: trace
