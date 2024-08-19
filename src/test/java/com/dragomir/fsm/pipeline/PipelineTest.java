@@ -1,14 +1,15 @@
 package com.dragomir.fsm.pipeline;
 
-import com.dragomir.fsm.service.TransactionService;
-import com.dragomir.fsm.pipeline.step.Step;
 import com.dragomir.fsm.entity.Transaction;
+import com.dragomir.fsm.pipeline.step.Step;
+import com.dragomir.fsm.service.TransactionService;
 import com.dragomir.fsm.state.TransactionState;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +29,7 @@ public class PipelineTest {
 
     @Test
     public void runFullPipeline() throws Exception {
-        var t = new Transaction(1L, TransactionState.NEW);
+        var t = new Transaction(1L, TransactionState.NEW, LocalDateTime.now());
         var p = Pipeline.<Transaction, Transaction>of(steps);
         var tran = p.execute(t);
         assertTrue(tran.getState() == TransactionState.APPLIED);
@@ -36,7 +37,7 @@ public class PipelineTest {
 
     @Test
     public void retryPipelineFromStep() throws Exception {
-        var t = new Transaction(1L, TransactionState.WAITING_APPROVAL);
+        var t = new Transaction(1L, TransactionState.WAITING_APPROVAL, LocalDateTime.now());
         int i = t.getState().ordinal();
         var p = Pipeline.<Transaction, Transaction>of(steps, i);
         var tran = p.execute(t);
@@ -45,10 +46,10 @@ public class PipelineTest {
 
     @Test
     public void testWithBadStateTransition() {
-        var t = new Transaction(1L, TransactionState.NEW);
+        var t = new Transaction(1L, TransactionState.NEW, LocalDateTime.now());
 
         doReturn(new Transaction(1L,
-                TransactionState.WAITING_APPROVAL))
+                TransactionState.WAITING_APPROVAL, LocalDateTime.now()))
                 .when(transactionService).changeState(any(), eq(TransactionState.APPROVED));
 
         assertThrows(RuntimeException.class, () -> {

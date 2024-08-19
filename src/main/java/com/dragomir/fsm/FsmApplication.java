@@ -7,9 +7,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.time.LocalDateTime;
 
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class FsmApplication {
 
     public static void main(String[] args) {
@@ -22,7 +25,7 @@ public class FsmApplication {
     //    @Bean
     public CommandLineRunner runAtStartup() {
         return args -> {
-            var t = new Transaction(1L, TransactionState.NEW);
+            var t = new Transaction(1L, TransactionState.NEW, LocalDateTime.now());
             prod.sendDefault(t);
         };
     }

@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -50,7 +51,7 @@ public class KafkaPipelineTest {
     @Test
     @Rollback(value = false)
     public void test1() throws IOException {
-        var tx = new Transaction(1L, TransactionState.NEW);
+        var tx = new Transaction(1L, TransactionState.NEW, LocalDateTime.now());
         prod.executeInTransaction(kt -> kt.sendDefault(tx));
 
         await()

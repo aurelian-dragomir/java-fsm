@@ -4,5 +4,8 @@ public enum TransactionState {
     NEW,
     WAITING_APPROVAL,
     APPROVED,
-    APPLIED
+    APPLIED,
+    AUDITED,
+    PUBLISHED,
+    ARCHIVED
 }

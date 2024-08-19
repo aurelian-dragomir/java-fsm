@@ -1,9 +1,12 @@
 package com.dragomir.fsm.pipeline;
 
 import com.dragomir.fsm.pipeline.step.Step;
+import com.dragomir.fsm.state.TransactionState;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+
+import static com.dragomir.fsm.state.TransactionState.NEW;
 
 @RequiredArgsConstructor
 public class Pipeline<I, O> {
@@ -18,10 +21,11 @@ public class Pipeline<I, O> {
     }
 
     public static <I, O> Pipeline<I, O> of(List<Step> steps) {
-        return of(steps, 0);
+        return of(steps, NEW);
     }
 
-    public static <I, O> Pipeline<I, O> of(List<Step> steps, int fromStepIndex) {
+    public static <I, O> Pipeline<I, O> of(List<Step> steps, TransactionState state) {
+        int fromStepIndex = state.ordinal();
         var p = new Pipeline<I, O>(steps.get(fromStepIndex));
         for (int i = fromStepIndex + 1; i < steps.size(); i++) {
             p = p.andThen(steps.get(i));

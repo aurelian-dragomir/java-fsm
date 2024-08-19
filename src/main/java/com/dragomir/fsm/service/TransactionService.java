@@ -1,31 +1,68 @@
 package com.dragomir.fsm.service;
 
 import com.dragomir.fsm.entity.Transaction;
+import com.dragomir.fsm.repository.TransactionRepository;
 import com.dragomir.fsm.state.TransactionState;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import static com.dragomir.fsm.state.TransactionState.*;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
+    private final TransactionRepository transactionRepository;
+    private final KafkaService kafkaService;
+
     private static final Map<TransactionState, TransactionState> STATE_MAP =
             Map.of(NEW, WAITING_APPROVAL,
                     WAITING_APPROVAL, APPROVED,
                     APPROVED, APPLIED);
 
+    @Transactional
     public Transaction changeState(Transaction tx, TransactionState state) {
         if (STATE_MAP.get(tx.getState()) != state) {
             throw new RuntimeException(String.format("Can't go from state %s to %s!",
                     tx.getState(), state));
         }
         tx.setState(state);
-        //call TransactionRepository for actual save in the database
+        transactionRepository.save(tx);
+        return tx;
+    }
+
+    @Transactional
+    public Transaction changeStateAndSendToKafka(Transaction tx, TransactionState state) {
+        if (STATE_MAP.get(tx.getState()) != state) {
+            throw new RuntimeException(String.format("Can't go from state %s to %s!",
+                    tx.getState(), state));
+        }
+        tx.setState(state);
+        transactionRepository.save(tx);
+        kafkaService.sendToNextServiceState(tx);
         return tx;
     }
 
     public TransactionState getNextState(TransactionState currentState) {
         return STATE_MAP.get(currentState);
+    }
+
+    public List<Transaction> findAll() {
+        return transactionRepository.findAll();
+    }
+
+    public List<Transaction> findByStateInAndStateElapsedTimeBefore(List<TransactionState> states,
+                                                                    LocalDateTime time) {
+        return transactionRepository.findByStateInAndStateElapsedTimeBefore(states, time);
+    }
+
+    public Transaction createSampleTransaction() {
+        var tx = new Transaction(NEW, LocalDateTime.now());
+        transactionRepository.save(tx);
+        return tx;
     }
 }

@@ -19,7 +19,7 @@ public class AppliedStep implements Step<Transaction, Transaction> {
     public Transaction compute(Transaction input) {
 
         //update in db
-        Transaction t = transactionService.changeState(input, TransactionState.APPLIED);
+        Transaction t = transactionService.changeStateAndSendToKafka(input, TransactionState.APPLIED);
         log.info("Executed step AppliedStep");
         return t;
     }

@@ -24,8 +24,8 @@ public class KafkaProducerConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-    @Value(value = "${service1-topic}")
-    private String service1Topic;
+    @Value(value = "${service2-topic}")
+    private String service2Topic;
 
     @Bean
     public ProducerFactory<Void, Transaction> transactionProducerFactory() {
@@ -46,7 +46,7 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<Void, Transaction> transactionKafkaTemplate() {
         var kt = new KafkaTemplate<>(transactionProducerFactory());
-        kt.setDefaultTopic(service1Topic);
+        kt.setDefaultTopic(service2Topic);
         return kt;
     }
 
