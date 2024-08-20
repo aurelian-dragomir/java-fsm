@@ -13,7 +13,22 @@ public class Pipeline<I, O> {
     private final Step<I, O> currentStep;
 
     public <NewO> Pipeline<I, NewO> andThen(Step<O, NewO> nextStep) {
-        return new Pipeline<>(input -> nextStep.compute(currentStep.compute(input)));
+        return new Pipeline<>(new Step<I, NewO>() {
+            @Override
+            public NewO compute(I input) {
+                return nextStep.compute(currentStep.compute(input));
+            }
+
+            @Override
+            public TransactionState getCurrentState() {
+                return nextStep.getCurrentState();
+            }
+
+            @Override
+            public TransactionState getNextState() {
+                return nextStep.getNextState();
+            }
+        });
     }
 
     public O execute(I input) {
@@ -25,9 +40,20 @@ public class Pipeline<I, O> {
     }
 
     public static <I, O> Pipeline<I, O> of(List<Step> steps, TransactionState state) {
-        int fromStepIndex = state.ordinal();
-        var p = new Pipeline<I, O>(steps.get(fromStepIndex));
-        for (int i = fromStepIndex + 1; i < steps.size(); i++) {
+        int fromIndex = -1;
+        for (int i = 0; i < steps.size(); i++) {
+            if (steps.get(i).getCurrentState() == state) {
+                fromIndex = i;
+                break;
+            }
+        }
+
+        if (fromIndex == -1) {
+            throw new RuntimeException(String.format("No step found for state %s", state));
+        }
+
+        var p = new Pipeline<I, O>(steps.get(fromIndex));
+        for (int i = fromIndex + 1; i < steps.size(); i++) {
             p = p.andThen(steps.get(i));
         }
         return p;

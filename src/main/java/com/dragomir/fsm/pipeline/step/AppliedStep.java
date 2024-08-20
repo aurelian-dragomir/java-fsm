@@ -12,15 +12,27 @@ import org.springframework.stereotype.Component;
 @Order(3)
 @Slf4j
 @RequiredArgsConstructor
-public class AppliedStep implements Step<Transaction, Transaction> {
+public class AppliedStep extends Step<Transaction, Transaction> {
     private final TransactionService transactionService;
 
     @Override
     public Transaction compute(Transaction input) {
 
         //update in db
-        Transaction t = transactionService.changeStateAndSendToKafka(input, TransactionState.APPLIED);
+//        Transaction t = transactionService.changeStateAndSendToKafka(input, TransactionState.APPLIED);
+        Transaction t = transactionService.changeState(input, TransactionState.APPLIED);
+
         log.info("Executed step AppliedStep");
         return t;
+    }
+
+    @Override
+    public TransactionState getCurrentState() {
+        return TransactionState.APPROVED;
+    }
+
+    @Override
+    public TransactionState getNextState() {
+        return TransactionState.APPLIED;
     }
 }

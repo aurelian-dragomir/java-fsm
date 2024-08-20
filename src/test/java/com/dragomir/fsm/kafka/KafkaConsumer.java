@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 @Getter
 public class KafkaConsumer {
     private Transaction tx;

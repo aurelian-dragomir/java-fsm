@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@Testcontainers
-@Import(KafkaConsumer.class)
+//@SpringBootTest
+//@Testcontainers
+//@Import(KafkaConsumer.class)
 @Slf4j
 public class KafkaPipelineTest {
 

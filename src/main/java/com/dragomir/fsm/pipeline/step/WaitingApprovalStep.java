@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Order(1)
 @Slf4j
 @RequiredArgsConstructor
-public class WaitingApprovalStep implements Step<Transaction, Transaction> {
+public class WaitingApprovalStep extends Step<Transaction, Transaction> {
     private final TransactionService transactionService;
 
     @Override
@@ -22,6 +22,16 @@ public class WaitingApprovalStep implements Step<Transaction, Transaction> {
         Transaction t = transactionService.changeState(input, TransactionState.WAITING_APPROVAL);
         log.info("Executed step WaitingApprovalStep");
         return t;
+    }
+
+    @Override
+    public TransactionState getCurrentState() {
+        return TransactionState.NEW;
+    }
+
+    @Override
+    public TransactionState getNextState() {
+        return TransactionState.WAITING_APPROVAL;
     }
 
 }

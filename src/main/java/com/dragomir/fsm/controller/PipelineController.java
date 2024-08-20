@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @RestController
@@ -20,6 +21,12 @@ public class PipelineController {
 
     @PostMapping
     public String send() {
+        for (Step st : steps) {
+            System.out.println(MessageFormat.format("Step {0}, currentState = {1}, " +
+                    "nextState = {2}", st.getClass().getSimpleName(), st.getCurrentState(), st.getNextState()));
+        }
+
+
         var tx = transactionService.createSampleTransaction();
         Pipeline.of(steps).execute(tx);
         return "OK";

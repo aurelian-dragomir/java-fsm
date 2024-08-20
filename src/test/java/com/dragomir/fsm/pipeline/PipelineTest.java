@@ -39,7 +39,7 @@ public class PipelineTest {
     public void retryPipelineFromStep() throws Exception {
         var t = new Transaction(1L, TransactionState.WAITING_APPROVAL, LocalDateTime.now());
         int i = t.getState().ordinal();
-        var p = Pipeline.<Transaction, Transaction>of(steps, i);
+        var p = Pipeline.<Transaction, Transaction>of(steps, TransactionState.WAITING_APPROVAL);
         var tran = p.execute(t);
         assertTrue(tran.getState() == TransactionState.APPLIED);
     }
